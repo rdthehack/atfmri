@@ -106,7 +106,7 @@ class FData:
                                         del img
                                     else:
                                         pass
-        print("Data taken in with Shape: "+str(imgs[1:].shape))
+#         print("Data taken in with Shape: "+str(imgs[1:].shape))
         if auxdat==1:
             self.auxdata.to_csv("image_to_name.csv")
         else:
@@ -122,6 +122,13 @@ class FData:
         for i in range(0,dat.shape[0],1):
             dat[i] = (dat[i] - dat[i].min())/(dat[i].max() - dat[i].min())
             dat[i] = dat[i]-0.5
+        cnt=0
+        for i in range(0,dat.shape[0],1):
+            if str(dat[cnt].mean()).isalnum()==True:
+                dat = np.delete(dat,cnt,axis=0)
+                cnt-=1
+            cnt+=1
+        print("Data taken in with Shape: ",dat[1:].shape)
         return dat[1:]
    
 #######################################################################################
