@@ -7,7 +7,7 @@ import os
 import sys
 
 f = FData()
-initdata = f.preprocLoad(shape= (36,36,36),srcdir="RS_data/")
+initdata = f.preprocLoad(shape= (24,24,24),srcdir="RS_data/")
 auxcsv = f.giveAux()
 
 s = Segregator(initdata,4,128)
