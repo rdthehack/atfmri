@@ -87,6 +87,7 @@ class FData:
         else:
             print("Loading Custom Data from Location:",srcdir)
         lt = os.listdir(srcdir)
+        tot = 0
         for classes in tqdm(lt,desc="Class Iteration:"):
             for _ in os.listdir(srcdir+classes):
                 for sub in tqdm(os.listdir(srcdir+classes+"/"+_),desc="Subject Iteration in "+classes+": "):
@@ -100,8 +101,9 @@ class FData:
                                         img = img["img"]
                                         img = img
                                         length = img.shape[0]
+                                        tot+=length
                                         imgs = np.concatenate((imgs,img),axis=0)
-                                        self.auxdata = self.auxdata.append({"name":nifti,"ino":index,"class":classes,"subject":sub,"type":scan,"date":date,"scanid":subid,"scanshape":img.shape,"len":length},ignore_index=True)
+                                        self.auxdata = self.auxdata.append({"name":nifti,"ino":index,"class":classes,"subject":sub,"type":scan,"date":date,"scanid":subid,"scanshape":img.shape,"len":length,"cf":tot},ignore_index=True)
                                         index+=1
                                         del img
                                     else:
@@ -123,11 +125,31 @@ class FData:
             dat[i] = (dat[i] - dat[i].min())/(dat[i].max() - dat[i].min())
             dat[i] = dat[i]-0.5
         cnt=0
+        olist = []
+        oshape = dat.shape[0]
         for i in range(0,dat.shape[0],1):
             if str(dat[cnt].mean()).isalnum()==True:
                 dat = np.delete(dat,cnt,axis=0)
                 cnt-=1
+                olist.append(i)
             cnt+=1
+        print("Invalid value indices: ",olist)
+        print("Invalid or nan values encountered and edited: ",len(olist)," out of ",(oshape-dat.shape[0]))    
+        df = pd.read_csv("image_to_name.csv")
+        for prob in olist:
+            for _ in range(0,df.shape[0],1):
+                if prob<=df.loc[_]["cf"]:
+                    df.loc[_,"cf"] = df.loc[_,"cf"]-1
+                    for k in range(_+1,df.shape[0],1):
+                        df.loc[k,"cf"] = df.loc[k,"cf"]-1
+                    break
+                else:
+                    pass
+        df.loc[0,"len"] = df.loc[0,"cf"]
+        for _ in range(1,df.shape[0],1):
+            df.loc[_,"len"] = df.loc[_,"cf"]-df.loc[_-1,"cf"]
+        df.to_csv("image_to_name.csv")
+        print("Aux data set corrected with new values.")
         print("Data taken in with Shape: ",dat[1:].shape)
         return dat[1:]
    
