@@ -15,6 +15,7 @@ class Segregator:
         if datpoints%2!=0:
             print("datpoints are odd. Invalid.")
             return None
+        print("Continuing with",datpoints,"Data points.")
         shape = data.shape
         self.thresh = lenthresh
         self.datpoints = datpoints
