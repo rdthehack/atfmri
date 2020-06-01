@@ -14,6 +14,9 @@ Invalid data was getting passed on through preprocessing due to index mismatch. 
 Update @28/5/2020:
 Codes have been changed to show the changes made in previous update in csv file.
 
+Update @01/06/2020:
+Added testing and deployment functionality in beta. Also added saved label encoder.
+
 Data was taken from the LONI IDA(Image Data Archive), ADNI project (ADNI, ADNI3). For more information visit https://ida.loni.usc.edu/login.jsp?project=&page=HOME#
 
 Contact for sample data to verify.
